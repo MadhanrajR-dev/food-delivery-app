@@ -1,0 +1,22 @@
+/*.verify {
+    min-height: 60vh;
+    display: grid;
+    overflow:auto;
+   
+}
+
+.verify .spinner {
+    width: 80px;
+    height: 80px;
+    place-self: center;
+    border: 5px solid gray;
+    border-top-color: tomato;
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}*/

@@ -8,9 +8,10 @@ const addFood= async(req,res)=>{
     console.log("Received Data:", req.body);  
     console.log("Uploaded File:", req.file);  
     
-    if (!req.file.path){
+    if (!req.file){
         return res.json({ success: false, message: "Image file is required!" });
     }
+    
  let image_filename= req.file.path;// directly from cloudinry path;
 
     const food = new foodModel({
@@ -65,17 +66,26 @@ const removeFood= async (req,res)=>{
 }
 
  const menuList = async (req,res)=>{
-console.log(req.file);
-
-const menu = new MenuModel({
-  menu_name:req.body.menu_name,
-  menu_item:req.file.path,     // directly from cloudinary
+    console.log(req.file.path);
+    
+try{
+    if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
+    const menu = new MenuModel({
+ menu_item:req.file.path,
+  menu_name:req.body.name,
+     // directly from cloudinary
 })
 console.log("menu",menu);
 
 
  await menu.save();
- res.json({success:true,menu})
+ res.json({success:true,message:"menu added successfully",menu})
+
+}catch(error){
+    res.json(({success:false,message:"menu failde to added"}))
+}
+
+
 
 }
 

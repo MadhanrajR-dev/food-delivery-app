@@ -19,8 +19,10 @@ const orderSchema=new mongoose.Schema({
     date:{type:Date,default:Date.now},
     payment:{type:Boolean,default:false},
     razorpay_order_id:{type:String},
-    paymentId:{type:String}
-})
+    paymentId:{type:String},
+    shippingAddress:{type:String},
+    deliverAt:Date,
+},{timestamps:true})
 
 
 const OrderModel= mongoose.models.order || mongoose.model("order",orderSchema);

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import './list.css'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const List = () => {
-  const url="http://localhost:4000"
+  const url= 'https://mern-project-6v4y.onrender.com' /* 'http://localhost:4000' */;
   const [list,setList]=useState([]);
 
 

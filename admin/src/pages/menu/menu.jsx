@@ -29,20 +29,31 @@ function AddMenu() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                value={name}
-                placeholder="menu name"
-                onChange={(e) => setMenuName(e.target.value)}
-            />
-            <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setMenuImage(e.target.files[0])}
-            />
-            <button type="submit">ADD</button>
-        </form>
+       
+       <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md space-y-4">
+  <input
+    type="text"
+    value={name}
+    placeholder="Menu name"
+    onChange={(e) => setMenuName(e.target.value)}
+    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+  />
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => setMenuImage(e.target.files[0])}
+    className="w-full text-gray-600 file:border file:border-gray-300 file:rounded-md file:px-4 file:py-2 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+  />
+
+  <button
+    type="submit"
+    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200"
+  >
+    ADD
+  </button>
+</form>
+
     );
 }
 

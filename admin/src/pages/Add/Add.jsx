@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Add = () => {
-  const url = "http://localhost:4000";
+  const url = 'https://mern-project-6v4y.onrender.com' /* 'http://localhost:4000' */;
 
   const [image, setImage] = useState(null);
   const [data, setData] = useState({

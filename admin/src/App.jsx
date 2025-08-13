@@ -7,13 +7,14 @@ import List from "./pages/List/List.jsx";
 import Orders from "./pages/Orders/Orders.jsx";
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import AddMenu from "./pages/menu/menu.jsx";
 
 
 
 const Home = () => <h1></h1>;
 
 const App = () => {
-const url="http://localhost:4000"
+const url= 'https://mern-project-6v4y.onrender.com' /* 'http://localhost:4000' */;
   return (
     <div >
       <ToastContainer />
@@ -25,6 +26,7 @@ const url="http://localhost:4000"
         <Route path="/add" element={<Add url={url} />} />
         <Route path="/list" element={<List url={url} />} />
         <Route path="/orders" element={<Orders url={url}/>} />
+        <Route path='/menu' element={<AddMenu url={url}/>}/>
         </Routes>
       </div>
       </div>

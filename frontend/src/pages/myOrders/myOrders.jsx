@@ -5,10 +5,12 @@ import { StoreContext } from "../../context/StoreContext.jsx";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { assets } from "../../assets/assets.js";
+import { useNavigate } from "react-router-dom";
 
 const MyOrders = () => {
   const { url, token } = useContext(StoreContext);
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
   const fetchOrders = async () => {
     try {
       const response = await axios.post(
@@ -67,7 +69,7 @@ const MyOrders = () => {
           <span className="text-[tomato]">&#x25cf;</span>{" "}
           <b className="font-medium text-[#454545]">{order.status}</b>
         </p>
-<button className="bg-green-500 text-white px-5 py-3 w-fit rounded cursor-pointer hover:opacity-90">
+<button onClick={()=>navigate(`/track/${order._id}`)} className="bg-green-500 text-white px-5 py-3 w-fit rounded cursor-pointer hover:opacity-90">
   Track Order
 </button>
 

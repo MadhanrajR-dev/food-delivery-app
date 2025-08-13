@@ -8,6 +8,8 @@ import Footer from './components/footer/Footer'
 import Loginpopup from "./components/Loginpopup/Loginpopup";
 import Verify from './pages/verify/verify.jsx'
 import MyOrders from './pages/myOrders/myOrders.jsx'
+import DeliveryTracking from './components/map/DeliveryTrack.jsx'
+
 
 
 
@@ -24,6 +26,7 @@ const App = () => {
       <Route path='/Placeorder' element={<Placeorder/>}/>
       <Route path='/verify' element={<Verify/>}/>
       <Route path='/myOrders' element={<MyOrders/>}/>
+      <Route path='/track/:orderId' element={<DeliveryTracking/>}/>
     </Routes>
     
     </div>

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 
-export const StoreContext= createContext(null);
+export const StoreContext = createContext(null);
 
   const StoreContextProvider=(props)=>{
   const [cartItem,setCartItem]=useState({});
@@ -11,6 +11,11 @@ export const StoreContext= createContext(null);
 
   const [token,setToken]=useState("");
   const [food_list,setFoodList]=useState([])
+  const [searchQuery,setSearchQuery] = useState(()=>{
+  const saved =  localStorage.getItem("lastSearch")
+  return saved ? saved :""
+});
+  const [recentSearch,setRecentSearch] = useState(JSON.parse(localStorage.getItem("recentSearch")) || [])
   
   const addCart=async (itemId)=>{
     if(!cartItem?.[itemId]){
@@ -66,11 +71,36 @@ export const StoreContext= createContext(null);
         }
         loadData();
       },[])
+
+      useEffect(()=>{
+      localStorage.setItem("lastSearch",searchQuery)
+      },[searchQuery])
+
+      const addRecentSearches = (term)=>{
+     if(!term && !term.trim()) return;
+     if(!recentSearch.includes(term)){
+      const updated = [term,...recentSearch].splice(0,5);
+      setRecentSearch(updated);
+     }
+
+      }
+      useEffect(() => {
+  localStorage.setItem("recentSearch", JSON.stringify(recentSearch));
+}, [recentSearch]);
+
+      console.log(addRecentSearches);
+      
+
 const contextValue={
          food_list,
          setFoodList,
+         setSearchQuery,
+         searchQuery,
+         recentSearch,
          cartItem,
+         addRecentSearches,
          setCartItem,
+         setRecentSearch,
          addCart,
          removeCart,
          getTotalCartAmount,

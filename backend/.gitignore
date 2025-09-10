@@ -1,4 +1,5 @@
 node_modules/
 uploads/
-backend/.env
-backend/config/serviceAccountKey.json
+# Ignore environment files
+.env
+serviceAccountKey.json

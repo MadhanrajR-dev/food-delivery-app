@@ -14,6 +14,8 @@ dist-ssr
 
 # Node modules
 node_modules/
+frontend/public/firebase-messaging-sw.js/
+src/firebaseConfig.js   
 
 # Editor directories and files
 .vscode/*

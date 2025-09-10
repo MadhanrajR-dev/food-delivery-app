@@ -13,13 +13,13 @@ const Footer = () => {
 
   return (
     <>
-      {loading ? (
-        /* Skeleton Loader */
+      {/* {loading ? (
+        
         <div className="bg-white text-[#d9d9d9] flex flex-col items-center gap-5 px-[8vw] pt-20 mt-24 animate-pulse">
-          {/* 3-column skeleton */}
+          
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-10">
             
-            {/* Column 1 */}
+        
             <div className="flex flex-col items-start gap-5 w-full">
               <div className="h-10 w-32 bg-gray-300 rounded"></div>
               <div className="h-4 w-48 bg-gray-300 rounded"></div>
@@ -30,7 +30,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Column 2 */}
+            
             <div className="flex flex-col items-start gap-5 w-full">
               <div className="h-6 w-32 bg-gray-300 rounded"></div>
               <div className="space-y-2 w-full">
@@ -41,7 +41,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Column 3 */}
+          
             <div className="flex flex-col items-start gap-5 w-full">
               <div className="h-6 w-32 bg-gray-300 rounded"></div>
               <div className="space-y-2 w-full">
@@ -51,14 +51,14 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Divider */}
+          
           <div className="w-full h-[2px] bg-gray-400 my-5"></div>
 
-          {/* Footer text */}
+          
           <div className="h-4 w-64 bg-gray-300 rounded"></div>
-        </div>
-      ) : (
-        /* Actual Footer */
+        </div> 
+      ) : ( */}
+      
         <div className="footer bg-[#323232] text-[#d9d9d9] flex flex-col items-center gap-5 px-[8vw] pt-20 mt-24" id='footer'>
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="flex flex-col items-start gap-5">
@@ -95,7 +95,7 @@ const Footer = () => {
             Copyright 2024 tomato - All Rights Reserved.
           </p>
         </div>
-      )}
+      
     </>
   );
 };

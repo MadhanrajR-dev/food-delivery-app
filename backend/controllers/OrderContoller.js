@@ -1,9 +1,13 @@
+import dot from 'dotenv';
+dot.config();
 import orderModel from "../models/OrderModel.js";
 import userModel from "../models/userModel.js";
+import mongoose from 'mongoose';
+import twilio from 'twilio'
 import Razor from 'razorpay';
-import dot from 'dotenv';
+import handleNotification from "../firebaseAdmin.js";
 
-dot.config();
+
 
 
 
@@ -12,14 +16,16 @@ const razor = new Razor({
   key_secret: process.env.RAZOR_SECRET_KEY
 });
 
-//placing user order for fronend
+
+/* const  account_sid=process.env.ACCOUNT_SID
+const  auth_token=process.env.AUTH_TOKEN */
+
+
+//placing user order for frontend
 
 const placeOrder=async (req,res )=>{
   const frontend = 'http://localhost:5174';
-
     try{
- 
-
       const paise = req.body.amount * 100
       const data = new Date()
       const readable = data.toISOString().slice(0,10);
@@ -31,10 +37,10 @@ const placeOrder=async (req,res )=>{
         receipt:receipt,
         payment_capture:1,
       };
+      console.log("fire base token",req.body.tokenfcm);
       console.log(options);
       const razorPay = await razor.orders.create(options);
       console.log("Received Order Request:", req.body);
-
       const newOrder=new orderModel({
         userId:req.body.userId,
         items:req.body.items,
@@ -42,30 +48,28 @@ const placeOrder=async (req,res )=>{
         address:req.body.address,
         payment:true,
         razorpay_order_id:razorPay.id,
-        status:req.body.status
+        status:req.body.status,
       })
       await newOrder.save();
-      await userModel.findByIdAndUpdate(req.body.userId,{cartData:{}});
+    const updatedUser =  await userModel.findByIdAndUpdate(req.body.userId,{
+        $set:{
+      cartData:{},
+      tokenfcm:req.body.tokenfcm,
+      }
+    },
+    { new: true },
+    );
       
-
-
-     /* const item = req.body.item;
-    
-
-     let total = item.reduce((acc,item)=>{
-      return acc+item.price*item.quantity;
-
-     },0)
-     
-
-     const deliverCharge = 2*80;
-      total +=deliverCharge;
- */
-     
-     
+      if (req.body.tokenfcm) {
+      await handleNotification(
+        "Order Placed Successfully 🎉",
+        `Your order is confirmed!`,
+        req.body.tokenfcm
+      );
+    }
      
       
-     res.json({ success: true, order: razorPay , dbOrderId: newOrder._id});//chnaged razorPay.id
+     res.json({ success: true, order: razorPay , dbOrderId: newOrder._id,user:updatedUser});//chnaged razorPay.id
 
    
     }catch (error){
@@ -100,8 +104,8 @@ const verifyOrder = async (req,res)=>{
 const userOrders = async (req,res)=>{
 
   try{
-    const orders = await orderModel.find({userId:req.body.userId})
-    res.json({success:true,data:orders})
+    const orders = await orderModel.find({userId:req.body.userId})//
+    res.json({success:true,data:orders});
   }catch(error){
       console.log(error);
       res.json({sucess:false,message:"error"})
@@ -133,4 +137,72 @@ const updateStatus = async (req,res)=>{
 
 }
 
-export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus}
+const userComments = async (req,res)=>{
+  try{
+       const {comment} = req.body;
+       const {userId} = req.body;
+       const data = await orderModel.findOneAndUpdate(
+       {userId:userId},
+        {
+          $push:{
+            rating:{comment,userId}
+          } //comments ,
+      },
+     {new:true});
+      console.log("comment",data);
+      const someOne = await orderModel.findOne({userId:new mongoose.Types.ObjectId(userId)});
+      if(!someOne){
+      console.log("The user One Who comment",someOne);
+      }
+      if(!data){
+        return res.json({success:false, message:"comments is not found"})
+      }
+  res.json({success:true,message:"comment succefully",data:data})
+  }catch(error){
+    console.log(error);
+    res.json({success:false,message:"failed to uplaod comment"})
+    
+  }
+}
+
+const deleteComment = async (req,res)=>{
+  try{
+      const {userId,comment} = req.body;
+  const someOne = await orderModel.findOneAndUpdate(
+    {userId:userId},
+    {
+      $push:{
+        rating:{
+          comment:comment
+        }
+      }
+    },
+    {new:true})
+  console.log(someOne);
+  res.json({success:true,message:"comment delete succefully",data:someOne})
+  }catch(error){
+console.log(error);
+res.json({success:false,message:"comment failed to delte"})
+  }
+}
+
+const sendSms = async (req,res)=>{
+  try{
+    const {phone,name,orderId} = req.body;
+    const client =  twilio(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
+  const sms =  await client.messages.create({
+     body:`Hi${name} order for ${orderId}`,
+     from:process.env.TWILIO_PHONE_NUMBER,//twilio phone number,
+     to:`+91${phone}`
+    })
+    console.log("send sms",sms);
+    
+    res.json({success:true,message:"message send successfully"})
+    
+  }catch(error){
+    console.log(error);
+    res.json({success:false,message:"fail to send sms"})
+  }
+}
+
+export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus,userComments,deleteComment,sendSms}

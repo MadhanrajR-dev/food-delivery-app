@@ -9,6 +9,11 @@ const itemSchema = new mongoose.Schema({
   image: String,
   category: String,
 });
+const rating = new mongoose.Schema({
+  userId:{type:mongoose.Schema.Types.ObjectId,ref:"user",required:true},
+  rating:{type:Number, required:true, min:1 , max:5},
+  comment:{type:String}
+})
 
 const orderSchema=new mongoose.Schema({
     userId:{type:String,required:true},
@@ -22,6 +27,7 @@ const orderSchema=new mongoose.Schema({
     paymentId:{type:String},
     shippingAddress:{type:String},
     deliverAt:Date,
+    rating:[rating]
 },{timestamps:true})
 
 

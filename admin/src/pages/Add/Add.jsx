@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Add = () => {
-  const url = 'https://mern-project-6v4y.onrender.com' /* 'http://localhost:4000' */;
+  const url = /* 'https://mern-project-6v4y.onrender.com' */  'http://localhost:4000' ;
 
   const [image, setImage] = useState(null);
   const [data, setData] = useState({
@@ -102,7 +102,7 @@ const Add = () => {
         <div className="add-category-price">
           <div className="add-category flex-col">
             <p>Product Category</p>
-            <select name="category" value={data.category} onChange={onChangeHandler}>
+            <select name="category" value={data.category} onChange={onChangeHandler} className="overflow-auto">
               <option value="Salad">Salad</option>
               <option value="Rolls">Rolls</option>
               <option value="Desserts">Desserts</option>
@@ -111,6 +111,9 @@ const Add = () => {
               <option value="Pure Veg">Pure Veg</option>
               <option value="Pasta">Pasta</option>
               <option value="Noodles">Noodles</option>
+              <option value="Biriyani">Biriyani</option>
+              <option value="Shawarma">Shawarma</option>
+                            <option value="Dosa">Dosa</option>
             </select>
           </div>
 

@@ -1,14 +1,20 @@
-import React, { useContext, useEffect } from "react";
+import  { useContext, useEffect } from "react";
 import "./placeorder.css";
 import { StoreContext } from "../../context/StoreContext.jsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { messaging } from "../../firebaseConfig.js";
+import { onMessage,getToken } from "firebase/messaging";
+import {Bell} from 'lucide-react';
 import axios from "axios";
+import {motion,AnimatePresence} from 'framer-motion'
 
 const Placeorder = () => {
   const { getTotalCartAmount, token, food_list, cartItem, url } =
     useContext(StoreContext);
+      const [token_fcm,setToken_fcm] = useState(null);
+      const [notification,setNotification] = useState([]);
+      const [showPopup,setShowPopup] = useState(false);
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -25,9 +31,38 @@ const Placeorder = () => {
     const value = event.target.value;
     setData((data) => ({ ...data, [name]: value }));
   };
+    const getTokenFCM = async ()=>{
+      try{
+        const currentToken = await getToken(messaging,{
+         vapidKey:"BJaCVlPk2rtyvZVHINMRXmFq7kHIF2PoabZtauusqaqlZbScEUSw5TZz1itfV9vOwIsx6-qzlkDC3HRO_Ypo9kU"
+        }) 
+        console.log(currentToken);
+        
+        if(currentToken){
+         console.log("token received",currentToken);
+         setToken_fcm(currentToken);
+         
+        }else{
+         console.log("failed to get token");
+         
+        }
+      }catch(error){
+       console.log("Error",error);
+       
+      }
+   };
 
   const placeOrder = async (e) => {
     e.preventDefault();
+    let token1 = token_fcm;
+   
+   if(!token1){
+   token1 = await getTokenFCM();
+   if(!token1){
+    alert("permission is deinied to get tokenfcm");
+   }
+   } 
+    
     let orderItems = [];
 
     food_list.map((item) => {
@@ -37,16 +72,32 @@ const Placeorder = () => {
         orderItems.push(itemInfo);
       }
     });
+    
+
     let orderdata = {
       address: data,
       items: orderItems,
       amount: getTotalCartAmount() + 2,
+      tokenfcm:token1,
+
     };
+    let phone = {
+      phone:data.phone,
+      name:data.firstName
+
+    }
     console.log("Order Data: ", orderdata);
 
     let response = await axios.post(url + "/api/order/place", orderdata, {
       headers: { token },
     });
+    if(response.data.success){
+      await axios.post(`${url}/api/order/sms`,phone,{
+        headers:{
+          token
+        }
+      })
+    }
     if (response.data.success) {
       const razorOrder = response.data.order;
       localStorage.setItem("razor_order_id", razorOrder.id);
@@ -67,6 +118,7 @@ const Placeorder = () => {
           handler: function (response) {
             alert("payment successfull");
             window.location.href = `/verify?success=true&paymentId=${response.razorpay_payment_id}`;
+            
           },
 
           prefill: {
@@ -88,13 +140,35 @@ const Placeorder = () => {
         const rzp = new window.Razorpay(options);
         rzp.open();
       };
+     
+      
     } else {
       alert("error");
     }
+   
   };
-  const navigate = useNavigate();
+   const navigate = useNavigate();
 
-  useEffect(() => {
+useEffect(() => {
+   const initFCM = async ()=>{
+     const permission = await Notification.requestPermission();
+     console.log(permission);
+     if(permission === "granted"){
+       await getTokenFCM();
+     }
+     
+   }
+   initFCM();
+   onMessage(messaging,(payload)=>{
+     console.log("new FCM message",payload);
+/*      alert(payload.notification.title+ ":"+payload.notification.body) */
+      const{title,body} = payload.notification;
+      setNotification((prev)=>[
+        ...prev,{id:Date.now(),title,body}
+      ])
+      setShowPopup(true);
+      setTimeout(()=>setShowPopup(false),3000);
+   })
     if (!token) {
       navigate("/cart");
     } else if (getTotalCartAmount() === 0) {
@@ -103,6 +177,7 @@ const Placeorder = () => {
   }, [token]);
 
   return (
+    <div>
     <form
   onSubmit={placeOrder}
   className="flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-[100px] mt-10 px-4 sm:px-8"
@@ -250,6 +325,52 @@ const Placeorder = () => {
 
 
 </form>
+<div className="fixed top-5  right-56 z-50 ">
+  <div className="relative">
+  <Bell className="w-9 h-9 text-white bg-blue-600 rounded-full" onClick={()=>setShowPopup(!showPopup)} />
+        <AnimatePresence>
+          {notification.length > 0 && (
+            <motion.span
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full"
+            >
+              {notification.length}
+            </motion.span>
+          )}
+        </AnimatePresence>
+    </div>
+
+{/* show popu menu */}
+
+ <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-12 right-0 w-80 bg-white shadow-lg rounded-lg overflow-hidden border"
+          >
+            {notification.map((n) => (
+              <motion.div
+                key={n.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 3 }}
+                transition={{ duration: 0.2 }}
+                className="p-3 border-b border-gray-200"
+              >
+                <h4 className="font-bold">{n.title}</h4>
+                <p className="text-sm text-gray-700">{n.body}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+</div>
+</div>
 
   );
 };

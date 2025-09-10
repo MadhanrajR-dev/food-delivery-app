@@ -3,15 +3,12 @@ import "./fooddisplay.css";
 import { StoreContext } from "../../../context/StoreContext.jsx";
 import Fooditem from "../../fooditem/Fooditem.jsx";
 
-const Fooddisplay = ({ category ,setCategory}) => {
-  const { food_list ,searchQuery,addRecentSearches} = useContext(StoreContext);
-  const [loading, setLaoding] = useState(true);
+const Fooddisplay = ({ category ,showSkeleton ,setCategory}) => {
+  const { food_list ,searchQuery,setSearchQuery} = useContext(StoreContext);
+ const [loading, setLaoding] = useState(true); 
  
   const filterFood = useMemo(()=>{
-  if(!searchQuery && !searchQuery.trim()){
-    return food_list;
-  }
- const lowerQuery = String(searchQuery).toLowerCase();
+ const lowerQuery = String(searchQuery || "").trim().toLowerCase();
  if(!lowerQuery){
   return category === "All"
   ? food_list : food_list.filter(item=>item.category === category)
@@ -25,15 +22,20 @@ const Fooddisplay = ({ category ,setCategory}) => {
 
     return bMatch-aMatch;
   })
-  },[food_list,searchQuery,category,addRecentSearches])
+  },[food_list,searchQuery,category])
+
+ /*  const showALLFoods = ()=>{
+    setCategory("All");
+    setSearchQuery("");
+  } */
 
   useEffect(() => {
-    setInterval(() => setLaoding(false), 4000);
+    setInterval(() => setLaoding(false), 2000); 
   }, []);
 
- return (
-  <>
-    {loading ? (
+ 
+    if(showSkeleton){
+      return (
       <div className="mt-[30px] p-[30px]">
         
         <div className="h-6 bg-gray-300 rounded w-48 animate-pulse"></div>
@@ -51,33 +53,36 @@ const Fooddisplay = ({ category ,setCategory}) => {
           ))}
         </div>
       </div>
-    ) : (
-      <div className="mt-[30px] p-[30px]" id="food-display">
+    )
+  } 
+    return (
+      <div className=" w-full mt-[20px] p-[20px]" id="food-display">
+
+        {/* <button onClick={ showALLFoods} className="flex pl-10  px-3 py-3    text- font-bold text-lg  transform transition-all duration-300 hover:scale-110  hover:text-black hover:z-10">
+        ALL FOODS 
+        </button> */}
         <h2 className="text-[max(2vw,24px)] font-semibold">
-          Top dishes near
+          Top dishes near 
         </h2>
 
         <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] mt-[30px] gap-[30px] row-gap-[50px]">
           
-          {filterFood.map((item, index) => {
-            if (category === "All" || category === item.category) {
-              return (
-                <Fooditem 
-                  key={index}
-                  id={item._id}
-                  name={item.name}
-                  description={item.description}
-                  price={item.price}
-                  image={item.image}
-                />
-              );
-            }
-          })}
+         {filterFood 
+/*  .filter((item) => category === "All" ||   category === item.category)  */
+  .map((item, index) => (
+ <Fooditem
+      key={index}
+      id={item._id}
+      name={item.name}
+      description={item.description}
+      price={item.price}
+      image={item.image}
+    /> 
+  )
+  )}
         </div>
       </div>
-    )}
-  </>
-);
+)
 
 };
 

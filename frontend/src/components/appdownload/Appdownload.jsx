@@ -10,9 +10,9 @@ const Appdownload = () => {
   },[])
   return (
     <>
-  {loading ? (
+ {/*  {loading ? (
   <div className="mx-auto bg-white mt-[100px] text-center font-medium text-[max(3vw,20px)] animate-pulse">
-    {/* skeleton want actual structure of our real content */}
+    
     <div className="h-6 w-1/2 mx-auto bg-gray-300 rounded"></div>
 
     
@@ -21,7 +21,7 @@ const Appdownload = () => {
       <div className="w-[max(30vw,120px)] max-w-[180px] h-16 bg-gray-300 rounded"></div>
     </div>
   </div>
-) : (
+) : ( */}
   <div id='app-download' className="mx-auto mt-[100px] text-center font-medium text-[max(3vw,20px)]">
     <p>For Better look For</p>
 
@@ -38,7 +38,7 @@ const Appdownload = () => {
       />
     </div>
   </div>
-)}
+
 
     
     </>

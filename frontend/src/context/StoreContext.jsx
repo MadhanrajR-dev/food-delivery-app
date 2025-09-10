@@ -1,4 +1,4 @@
-import React, { createContext,useEffect,useState } from "react";
+import { createContext,useEffect,useState } from "react";
 import axios from 'axios';
 
 
@@ -7,10 +7,11 @@ export const StoreContext = createContext(null);
 
   const StoreContextProvider=(props)=>{
   const [cartItem,setCartItem]=useState({});
-  const url = import.meta.env.VITE_API_URL;
+  const url = 'http://localhost:4000'  /* import.meta.env.VITE_API_URL */ ;
 
   const [token,setToken]=useState("");
   const [food_list,setFoodList]=useState([])
+  const [menu_list,setMenuList] = useState([]);
   const [searchQuery,setSearchQuery] = useState(()=>{
   const saved =  localStorage.getItem("lastSearch")
   return saved ? saved :""
@@ -47,11 +48,13 @@ export const StoreContext = createContext(null);
     }
     return totalAmount;
   };
-  
-
       const fetchFoodList=async()=>{
       const response = await axios.get(url+"/api/food/list");
       setFoodList(response.data.data)
+      }
+      const fetchMenuList = async ()=>{
+        const response = await axios.get(url+'/api/menu/all')
+        setMenuList(response.data.data);
       }
 
       const loadCartData=async (token)=>{
@@ -61,13 +64,17 @@ export const StoreContext = createContext(null);
   
       useEffect(()=>{
         async function loadData(){
-          await fetchFoodList();
+         
+          await Promise.all([
+          fetchFoodList(),
+          fetchMenuList()
+        
+      ]);
          if(localStorage.getItem("token"))
           {
           setToken(localStorage.getItem("token"));
           await loadCartData(localStorage.getItem("token"));
           }
-        
         }
         loadData();
       },[])
@@ -93,6 +100,8 @@ export const StoreContext = createContext(null);
 
 const contextValue={
          food_list,
+         menu_list,
+         setMenuList,
          setFoodList,
          setSearchQuery,
          searchQuery,

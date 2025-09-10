@@ -18,7 +18,7 @@ const Verify = () => {
           const response = await axios.post(url+"/api/order/verify",{success,paymentId,orderId})
         if(response.data.success){
             setTimeout(()=>{
-                   navigate("/myorders")
+                   navigate(`/myorders`)
             },3000)
             
         }else{

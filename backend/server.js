@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
@@ -5,11 +6,11 @@ import foodRouter from "./routes/FoodRoute.js";
 import userRouter from "./routes/UserRoute.js";
 import cartRouter from "./routes/CartRoute.js";
 import orderRouter from "./routes/OrderRoute.js";
+import axios from 'axios'
 import http from 'http';
 import {Server} from 'socket.io'
 import dot from 'dotenv'
 dot.config();
-import axios from 'axios';
 
 
 
@@ -29,7 +30,9 @@ const app=express();
 //middleware
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:['http://localhost:5173'
+
+]}));
 /* app.use(cors({origin:[
   'https://mern-project-admin-seven.vercel.app',
   'https://mern-project-sigma-jet.vercel.app'],
@@ -50,11 +53,11 @@ connectDB();
 
 
 app.use('/api/food',foodRouter);
-app.use("/image",express.static('uploads'));
+app.use('/api/menu',foodRouter);
+app.use("/image/uploads",express.static('uploads'));
 app.use("/api/user",userRouter)
 app.use("/api/cart",cartRouter)
 app.use("/api/order",orderRouter)
-
 app.get('/',(req,res)=>{
     res.send("API WORKING");
 });
@@ -72,38 +75,20 @@ io.on("connection",(socket)=>{
         socket.join(orderId);
         console.log(`${socket.id} joined room ${orderId}`);
         
-
-      /*   let lat=12.9716;
-        let lng = 77.5946;
-
-        const interval = setInterval(()=>{
-            lat += 0.0001;
-            lng += 0.0001;
-            io.to(orderId).emit('location',{lat,lng})
-        },5000)
-
-        socket.on("disconnect",()=>{
-            clearInterval(interval);
-            console.log(socket.id);
-        }) */
-        
     })
       socket.on("deliverylocation", async ({ orderId, location,name,customerLocation}) => { //location changed here as interval
  
-        const {lat,lng} = location;
-        const { lat:clat,lng:clng } = customerLocation;
+        const {lng,lat} = location;
+        const { lng:clng ,lat:clat,} = customerLocation;
 
         try{
-            const API_KEY =process.env.API_KEY;
-
-            const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
-
+            const API_KEY ="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImY2YzVhNmM5Yjk1MzRiMDc5MzExZGQ3Y2QwYmIzMGExIiwiaCI6Im11cm11cjY0In0="
+            const url =`https://api.openrouteservice.org/v2/directions/driving-car`;
             const body = {
-              coordinates:[ [lat,lng],//delivery person location
-              [clat,clng] // customerLocation
+              coordinates:[ [lng,lat],//delivery person location
+              [clng,clat] // customerLocation
             ]  
             }
-        
             const response = await axios.post(url,body,
                 {
                     headers:{
@@ -112,14 +97,29 @@ io.on("connection",(socket)=>{
                     }
                 }
             )
+            const data = await response.data;
 
-              const durationInSeconds = response.data.features[0].properties.summary.duration;
-    const eta = Math.round(durationInSeconds / 60);               
+
+    const durationInSeconds = data.routes[0].summary.duration;
+    const eta = Math.round(durationInSeconds / 60);
+    let etaText;
+    if(eta<60){
+      etaText = `${eta} : mins`;
+    }else {
+    const hour = Math.floor(eta/60);
+    const mins = eta % 60;
+    if(mins===0){
+      etaText =`${hour} hr`
+    }else{
+       etaText = `${hour}hr${mins}min`
+    }
+    }               
         
-  io.to(orderId).emit("location", {
+  io.to(orderId).emit("location",{
     location,
-    name:"madhan",
+    name,
     eta,
+    etaText,
     customerLocation,
   });
 }catch(error){
@@ -127,9 +127,9 @@ console.error(error);
 } 
  });
  
-   socket.on("disconnect", () => {
+ socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
-  });
+  }); 
 });
 
     

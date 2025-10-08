@@ -16,7 +16,11 @@ const Loginpopup = ({ setShowLogin }) => {
     const onChangeHandler=(event)=>{
     const name=event.target.name;
     const value=event.target.value;
-    setData(data=>({...data,[name]:value}))
+    setData(data=>(
+      {
+        ...data,
+        [name]:value
+      }))
   }
 
   const onLogin= async(event)=>{

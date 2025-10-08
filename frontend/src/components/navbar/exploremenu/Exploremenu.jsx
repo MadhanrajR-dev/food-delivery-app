@@ -75,27 +75,6 @@ const Exploremenu = ({ category, setCategory }) => {
                 <p className="text-sm sm:text-base">{item.name}</p>
               </div>
             ))}
-
-             {menu_list.map((item, index) =>  (
-            
-              <div key={index}
-                onClick={() =>
-                  setCategory((prev)=> prev === item.name?"All":item.name)
-                }
-                className="cursor-pointer text-center w-[120px] sm:w-[150px] flex flex-col items-center gap-2 hover:scale-105 transition-transform duration-200"
-              >
-                <img
-                  src={url+'/image/'+item.image}
-                  alt={item.name}
-                  className={`w-[100px] h-[100px] object-cover rounded-full border-4 ${
-                    category === item.name
-                      ?"border-[tomato]"
-                      :"border-gray-500"
-                  }`}
-                />
-                <p className="text-sm sm:text-base">{item.name}</p>
-              </div>
-            ))}
             </div>
           </div>
 

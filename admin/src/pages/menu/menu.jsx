@@ -15,7 +15,7 @@ const handleSubmit = async(e) => {
         formData.append("name", data.name);
 
         const result = await axios.post(
-            'http://localhost:4000/api/food/menulist',
+            'http://localhost:5000/api/food/menulist',
             formData,
             { headers: { 'Content-Type': 'multipart/form-data' } }
         );

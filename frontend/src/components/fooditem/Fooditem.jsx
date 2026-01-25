@@ -12,17 +12,13 @@ const Fooditem = ({id,name,price,description,image}) => {
         <div className="food-item-img-container">
           <img className='food-item-image' src={url+"/image/"+image} alt=""/>
           {!cartItem?.[id]
-             ?<img className='add' onClick={()=>addCart(id)} src={assets.add_icon_white} alt=" "/>:<div className='food-item-counter'>
-              <img onClick={()=>removeCart(id)}src={assets.remove_icon_red } alt=""/>
+             ?<img className='add' role='button' aria-label='add-button' onClick={()=>addCart(id)} src={assets.add_icon_white} alt=" "/>:<div className='food-item-counter'>
+              <img  onClick={()=>removeCart(id)} role="button" aria-label='remove-button' src={assets.remove_icon_red } alt=""/>
               <p>{cartItem[id] || 0}</p>
-              <img onClick={()=>addCart(id)}
+              <img role='button' onClick={()=>addCart(id)}
               src={assets.add_icon_green} alt=""/>
-            
              </div>
-          
-
           }   
-          
         </div>
         <div className='food-item-info'>
             <div className='food-item-name-rating'>
@@ -30,8 +26,7 @@ const Fooditem = ({id,name,price,description,image}) => {
                 <img src={assets.rating_starts} alt=""/>
             </div>
             <p className='food-item-desc'>{ description }</p>
-            <p className='food-item-price'>RS.{price}</p>
-                
+            <p className='food-item-price'>RS.{price}</p>        
         </div>
       
     </div>

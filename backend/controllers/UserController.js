@@ -2,6 +2,9 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import dot from 'dotenv';
+
+dot.config()
 
 
 
@@ -79,7 +82,7 @@ const registerUser=async(req,res)=>{
         });
 
         const user=await newUser.save();
-        const token= createToken(user._id);
+        const token= createToken(user._id.toString());
         res.json({success:true,token});
 }catch(error){
         console.log(error);

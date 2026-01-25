@@ -1,8 +1,6 @@
 import express from "express";
 import {addFood,listFood,removeFood,menuList, getMenuList, removeMenu} from "../controllers/FoodControllers.js";
 import multer from "multer";
-/* import { upload } from "../cloudinaryConfig.js"; */
-
 
 const foodRouter= express.Router();
 
@@ -16,7 +14,6 @@ const foodRouter= express.Router();
 })
 
 const upload=multer({storage:storage}); 
- 
 
 foodRouter.post("/add",upload.single("image"),addFood);
 foodRouter.post('/menulist',upload.single('image'),menuList);

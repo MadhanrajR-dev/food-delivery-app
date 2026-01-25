@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 const MyOrders = () => {
   const { url, token } = useContext(StoreContext);
   const [orders, setOrders] = useState([]); // Renamed to 'orders' for clarity
-  const [comment, setComment] = useState({});
-  const [deleteComments,setDeleteComments] = useState({});
+  const [comment, setComment] = useState("");
+
   const navigate = useNavigate();
 
   // Fetch all user orders
@@ -36,6 +36,8 @@ const MyOrders = () => {
   const onSubmitComment = async (e, orderId) => {
     e.preventDefault();
     const text = (comment[orderId] ?? "").toString().trim();
+    console.log(text);
+    
     if (!text) {
       alert("Please enter a comment");
       return;
@@ -50,7 +52,6 @@ const MyOrders = () => {
 
       if (response.data.success) {
         alert("Comment successfully added!");
-
         // Update orders state instantly
        setOrders((prevOrders) =>
   prevOrders.map((order) => {
@@ -62,9 +63,11 @@ const MyOrders = () => {
         }
       : order;
   })
+ 
+  
 );
-       
-        setComment((prev) => ({ ...prev, [orderId]: "" }));
+
+  setComment((prev) => ({ ...prev, [orderId]: "" }));
       }
     } catch (error) {
       console.error("Error posting comment:", error);
@@ -73,7 +76,7 @@ const MyOrders = () => {
    const deleteUserComment = async (orderId,commentIndex)=>{
     try{
       const deleteIndex = orders.find((o)=>
-       o._id === orderId )?.rating?.[commentIndex]?.comment
+       o._id === orderId )?.rating?.[commentIndex].comment
      const response = await axios.post(`${url}/api/order/deleteComment`,
       {userId:orderId,comment:deleteIndex},
       {
@@ -98,15 +101,14 @@ const MyOrders = () => {
   };
 
  useEffect(()=>{
- const savedComments = JSON.parse(localStorage.getItem("comment")) || {};
+ const savedComments = JSON.parse(localStorage.getItem("comment")) || [];
   setComment(savedComments);
  },[])
  useEffect(()=>{
  localStorage.setItem("comment",JSON.stringify(comment));
- },[comment])
+ },[])
   useEffect(() => {
-    if (token) fetchOrders();
-    
+    if (token) fetchOrders();  
   },
    [token]
 );
@@ -142,11 +144,11 @@ const MyOrders = () => {
                     {order.items.map((item, i) => (
                       <span key={i}>
                         {item.name} x {item.quantity}
-                        {i < order.items.length - 1 && ", "}
+                        {i < order.items.length - 1 && " , "}
                       </span>
                     ))}
                   </p>
-                  <p className="text-gray-600 mt-1">
+                  <p className="text-gray-700 mt-1">
                     ₹{order.amount}.00 • {order.items.length} items
                   </p>
                   <p className="mt-1">
@@ -156,7 +158,7 @@ const MyOrders = () => {
                   </p>
                 </div>
 
-                <button
+                <button 
                   onClick={() => navigate(`/track/${order._id}`)}
                   className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg"
                 >
@@ -187,7 +189,7 @@ const MyOrders = () => {
                       
                     ))
                   ) : (
-                    <p className="text-gray-500">No comments yet.</p>
+                    <p className="text-gray-500 ">No comments yet.</p>
                   )}
                 </div>
               </div>

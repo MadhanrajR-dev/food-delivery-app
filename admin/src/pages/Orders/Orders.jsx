@@ -1,4 +1,3 @@
-import React from 'react'
 import './orders.css'
 import { useState } from 'react'
 import {toast} from 'react-toastify'
@@ -12,7 +11,7 @@ const Orders = ({url}) => {
      const response = await axios.get(url+"/api/order/listOrder");
      if(response.data.success){
       setOrders(response.data.data);
-      console.log(response.data.data)
+      console.log(response.data.data);
      }else{
        toast.error("Error")
      }
@@ -32,9 +31,9 @@ const Orders = ({url}) => {
         
         <div className='order-list'>
           
-          {orders.map((order,index)=>{
+          {orders.map((order)=>{
             return(
-            <div key={index} className='order-item'>
+            <div key={order._id} className='order-item'>
               <img src={assets.parcel_icon} alt='ordered item'/>
               <div>
                 <p className='order-item-food'>

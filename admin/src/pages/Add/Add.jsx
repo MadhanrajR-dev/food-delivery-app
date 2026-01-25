@@ -5,7 +5,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Add = () => {
-  const url = /* 'https://mern-project-6v4y.onrender.com' */  'http://localhost:4000' ;
+  const url =
+    /* 'https://mern-project-6v4y.onrender.com' */ "http://localhost:5000";
 
   const [image, setImage] = useState(null);
   const [data, setData] = useState({
@@ -44,10 +45,10 @@ const Add = () => {
         console.log("Item added successfully:", response.data);
         setData({ name: "", description: "", price: "", category: "Salad" });
         setImage(null);
-        toast.success(response.data.message)
+        toast.success(response.data.message);
       } else {
         console.error("Server Error:", response.data.message);
-        toast.error(response.data.message)
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error("Axios Error:", error.response?.data || error.message);
@@ -102,7 +103,12 @@ const Add = () => {
         <div className="add-category-price">
           <div className="add-category flex-col">
             <p>Product Category</p>
-            <select name="category" value={data.category} onChange={onChangeHandler} className="overflow-auto">
+            <select
+              name="category"
+              value={data.category}
+              onChange={onChangeHandler}
+              className="overflow-auto"
+            >
               <option value="Salad">Salad</option>
               <option value="Rolls">Rolls</option>
               <option value="Desserts">Desserts</option>
@@ -113,7 +119,7 @@ const Add = () => {
               <option value="Noodles">Noodles</option>
               <option value="Biriyani">Biriyani</option>
               <option value="Shawarma">Shawarma</option>
-                            <option value="Dosa">Dosa</option>
+              <option value="Dosa">Dosa</option>
             </select>
           </div>
 

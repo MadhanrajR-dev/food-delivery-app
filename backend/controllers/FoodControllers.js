@@ -11,7 +11,7 @@ const addFood = async (req, res) => {
     if (!req.file) {
       return res.json({ success: false, message: "Image file is required!" });
     }
-
+    
     let image_filename = req.file.path.replace(/\\/g, "/");
     console.log("gettin image info",image_filename);
     // directly from cloudinry path;
@@ -31,6 +31,7 @@ const addFood = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
 //all food list
 
 const listFood = async (req, res) => {
@@ -76,8 +77,6 @@ const removeMenu = async (req,res)=>{
   }
 }
 
-
-
 const menuList = async (req, res) => {
   console.log(req.body);
   console.log(req.file);
@@ -107,7 +106,7 @@ const getMenuList = async (req, res) => {
   
     try{
     const data = await MenuModel.find({});
-  res.json({ success: true, message: "menu added success fully",  data:data });
+  res.json({ success: true, message: "menu added success fully",data:data });
 }catch(error){
     console.log("file to get menu",error);
     

@@ -2,21 +2,31 @@ import { createContext,useEffect,useState } from "react";
 import axios from 'axios';
 
 
+export  function useDebounce(value,delay){
+const [debounceValue,setDebounceValue] = useState(value);
+useEffect(()=>{
+const timeOut = setTimeout(()=>{
+setDebounceValue(value)
+},delay)
+return ()=>clearTimeout(timeOut);
+},[value])
+return debounceValue;
+}
 
 export const StoreContext = createContext(null);
   const StoreContextProvider=(props)=>{
   const [cartItem,setCartItem]=useState({});
-  const url = 'http://localhost:4000'  /* import.meta.env.VITE_API_URL */ ;
+  const url = 'http://localhost:5000'  /* import.meta.env.VITE_API_URL */ ;
   const [token,setToken]=useState("");
   const [food_list,setFoodList]=useState([])
   const [menu_list,setMenuList] = useState([]);
-  const [searchQuery,setSearchQuery] = useState(()=>{
+  const [ searchQuery,setSearchQuery ] = useState(()=>{
   const saved =  localStorage.getItem("lastSearch")
   return saved ? saved :""
 });
   const [recentSearch,setRecentSearch] = useState(JSON.parse(localStorage.getItem("recentSearch")) || [])
   
-  const addCart=async (itemId)=>{
+  const addCart= async (itemId)=>{
     if(!cartItem?.[itemId]){
         setCartItem((prev)=>({...prev,[itemId]:1}))
     }
@@ -61,8 +71,7 @@ export const StoreContext = createContext(null);
       }
   
       useEffect(()=>{
-        async function loadData(){
-         
+        async function loadData(){ 
           await Promise.all([
           fetchFoodList(),
           fetchMenuList()

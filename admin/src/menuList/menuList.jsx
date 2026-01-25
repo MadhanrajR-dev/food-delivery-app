@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import React from 'react'
 
-function MenuList() {
-  const url = "http://localhost:4000";
+function MenuList({url}) {
+  
   const [list, setMenuList] = useState([]);
   const fetchList = async () => {
     try {
@@ -28,11 +28,7 @@ function MenuList() {
         id: menuId,
       });
 
-     /*  if (response.data.sucess) {
-        toast.success(response.data.message);
-      } else {
-        toast.error(response.data.message);
-      } */
+   
       if (response.data.success) {
         setMenuList((prevList) => prevList.filter((item)=>item._id !== menuId));
         toast.success("food removed");

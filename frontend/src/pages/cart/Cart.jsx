@@ -34,7 +34,7 @@ const Cart = () => {
                 {/* 🟢 Small Device Layout */}
                <div className="grid grid-cols-6 gap-3 items-center md:hidden px-3 w-full">
   <img
-    src={url + "/image/" + item.image}
+    src={url+"/image/"+item.image}
     alt=""
     className="w-14 h-14 object-cover rounded col-span-1"
   />

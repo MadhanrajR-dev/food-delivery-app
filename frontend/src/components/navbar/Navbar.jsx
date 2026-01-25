@@ -2,19 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { useMemo } from "react";
-import "./navbar.css";
 import clsx from "clsx";
 import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
 import { AnimatePresence, motion } from "framer-motion";
+import { useDebounce } from "../../context/StoreContext";
 
-
-
-const Navbar = ({ setShowLogin, category, setCategory }) => {
-  const [menu, setMenu] = useState("home");
+const Navbar = ({ setShowLogin, category, setCategory,notification }) => {
+  const [menu, setMenu] = useState(null);
   const [showAllAfterSearch, setShowAllAfterSearch] = useState(false);
-  const [isOpen,setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [serachIcon, setSearchIcon] = useState(false);
   const {
     getTotalCartAmount,
@@ -32,7 +30,9 @@ const Navbar = ({ setShowLogin, category, setCategory }) => {
     setToken("");
     navigate("/");
   };
-const filterFood = useMemo(() => {
+  const search = useDebounce(searchQuery, 3000);
+
+  const filterFood = useMemo(() => {
     if (!searchQuery || !String(searchQuery).trim()) {
       if (showAllAfterSearch) {
         return food_list;
@@ -66,7 +66,6 @@ const filterFood = useMemo(() => {
   return (
     <div className="sticky top-0 z-50  m-w-full  px-4 py-3 bg-gradient-to-br from-gray-100 to-white shadow-md sm:shadow-none sm:pt-2 md:shadow-md">
       <div className="flex flex-col h-[50px]  sm:flex-row sm:justify-between sm:items-center w-full">
-        {/* Logo */}
         <div className="flex justify-center ">
           <Link to="/">
             <img
@@ -76,94 +75,100 @@ const filterFood = useMemo(() => {
             />
           </Link>
         </div>
-        <button className="flex left-4 mb-4 text-2xl block sm:hidden text-gray-500  cursor-pointer"
-          onClick={()=>setIsOpen(!isOpen)}
+        <button
+          className="flex left-4 mb-4 text-2xl block sm:hidden text-gray-500  cursor-pointer"
+          onClick={() => setIsOpen(!isOpen)}
         >
           ☰
         </button>
         {/* Menu - visible on all devices, vertical on small, horizontal on large */}
 
         <AnimatePresence>
-        {(isOpen || window.innerWidth>=640) && (
-           <motion.ul
-       initial={{opacity:0, y:-20}}
-       animate={{opacity:1,y:0}}
-       exit={{opacity:0,y:-20}}
-       transition={{duration:0.2}}
- className={`sm:static mt-0 left-0 w-36 sm:w-auto
+          {(isOpen || window.innerWidth >= 640) && (
+            <motion.ul
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className={`sm:static mt-0 left-0 w-36 sm:w-auto
             bg-white sm:bg-transparent shadow-md sm:shadow-none flex
             flex-col sm:flex-row gap-4 sm:gap-8 p-4 sm:p-0
             sm:flex`}
->
-          <Link to="/" onClick={()=>setMenu("home")}>
-            <span
-              className={`pb-[2px] px-2 text-black transform transition-all duration-300 hover:scale-110 ${
-                menu === "home" ? "border-[#49557e]" : "border-transparent"
-              } inline-block`}
             >
-              home
-            </span>
-          </Link>
-          <a href="#exeplore-menu" onClick={() => setMenu("menu")}>
-            <span
-              className={`pb-[2px] px-2 text-black transform transition-all duration-300 hover:scale-110 ${
-                menu === "menu" ? "border-[#49557e]" : "border-transparent"
-              } inline-block`}
-            >
-              menu
-            </span>
-          </a>
-          <a href="#app-download" onClick={() => setMenu("mobile-app")}>
-            <span
-              className={`pb-[2px]  px-2 text-black transform transition-all duration-300 hover:scale-110${
-                menu === "mobile-app"
-                  ? "border-[#49557e]"
-                  : "border-transparent"
-              } inline-block`}
-            >
-              mobile-app
-            </span>
-          </a>
-          <a href="#footer" onClick={() => setMenu("contact us")}>
-            <span
-              className={`pb-[2px]  px-2 text-black transform transition-all duration-300 hover:scale-110 ${
-                menu === "contact us"
-                  ? "border-[#49557e]"
-                  : "border-transparent"
-              } inline-block`}
-            >
-              contact us
-            </span>
-          </a>
-          <button
-            onClick={showALLFoods}
-            className="text-gray-600 z-50  font-bold   transform  duration-300 hover:scale-110  hover:text-black hover:z-10 "
-          >
-            ALL FOODS
-          </button>
-        </motion.ul>
-        )}
-    
+              <Link to="/">
+                <span
+                  className={`pb-[2px] px-2 text-black transform transition-all duration-300 hover:scale-110 ${
+                    menu === "home" ? "border-[#49557e]" : "border-transparent"
+                  } inline-block`}
+                >
+                  home
+                </span>
+              </Link>
+
+              <a href="#exeplore-menu" onClick={() => setMenu("menu")}>
+                <span
+                  className={`pb-[2px] px-2 text-black transform transition-all duration-300 hover:scale-110 ${
+                    menu === "menu" ? "border-[#49557e]" : "border-transparent"
+                  } inline-block`}
+                >
+                  menu
+                </span>
+              </a>
+              <a href="#app-download" onClick={() => setMenu("mobile-app")}>
+                <span
+                  className={`pb-[2px]  px-2 text-black transform transition-all duration-300 hover:scale-110${
+                    menu === "mobile-app"
+                      ? "border-[#49557e]"
+                      : "border-transparent"
+                  } inline-block`}
+                >
+                  mobile-app
+                </span>
+              </a>
+              <a href="#footer" onClick={() => setMenu("contact us")}>
+                <span
+                  className={`pb-[2px]  px-2 text-black transform transition-all duration-300 hover:scale-110 ${
+                    menu === "contact us"
+                      ? "border-[#49557e]"
+                      : "border-transparent"
+                  } inline-block`}
+                >
+                  contact us
+                </span>
+              </a>
+              <button
+                onClick={showALLFoods}
+                className="text-gray-600 z-50  font-bold   transform  duration-300 hover:scale-110  hover:text-black hover:z-10 "
+              >
+                ALL FOODS
+              </button>
+            </motion.ul>
+          )}
         </AnimatePresence>
 
         {/* Right section */}
-        <div className="flex flex-wrap items-center gap-6 sm:gap-10 
-  absolute right-7 top-4 sm:static sm:right-10 sm:top-10
-  justify-end sm:justify-end w-full sm:w-auto z-50">
+
+        <div
+          className="flex justify-evenly items-center gap-6 sm:gap-10 
+   right-10 top-4 sm:static sm:right-10 sm:top-10
+   sm:justify-end w-full sm:w-auto z-50"
+        >
           {/* Search Icon */}
-<div
-   className={clsx(
-  "flex items-center border rounded-full overflow-hidden transition-all duration-300 focus-within:border-gray-500",
-  serachIcon ? "py-4 px-2 w-64 sm:w-72" : "py-2 px-2 "
-)}>
-          <button onClick={()=>setSearchIcon(prev=>!prev)}>
+          <div
+            className={clsx(
+              `flex items-center border   rounded-full overflow-hidden transition-all duration-300 focus-within:border-gray-500`,
+              serachIcon ? "py-4 right-22 px-2 w-64 sm:w-72" : "py-2 px-2 ",notification?"mr-10":"",
+            )}
+          >
+            <button onClick={() => setSearchIcon((prev) => !prev)}>
               <img
                 src={assets.search_icon}
                 alt="Search"
                 className="w-5 sm:w-4 md:w-5"
               />
-          </button>
-               { serachIcon &&   (<input
+            </button>
+            {serachIcon && (
+              <input
                 type="text"
                 value={searchQuery}
                 placeholder="Search items..."
@@ -175,16 +180,19 @@ const filterFood = useMemo(() => {
                     setSearchQuery("");
                   }
                 }}
-                className=" ml-2 flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-800 "
+                className={`ml-2 flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-800   `}
                 autoFocus // focuses automatically when expanded
-              />)}
-            
+              />
+            )}
+
             {serachIcon && searchQuery !== "" && recentSearch.length > 0 && (
-              <div className={`absolute mt-80 bg-white w-96 rounded-md shadow-lg 
-                  overflow-y-auto h-60 z-50 transition-all duration-300`}>
-                {filterFood.map((item, idx) => (
+              <div
+                className={`absolute mt-80 bg-white w-96 rounded-md shadow-lg 
+                  overflow-y-auto h-60 z-50 transition-all duration-300`}
+              >
+                {filterFood.map((item) => (
                   <div
-                    key={idx}
+                    key={item._id}
                     onClick={() => {
                       addRecentSearches(item);
                       /*  setRecentSearch(searchQuery); */
@@ -214,7 +222,7 @@ const filterFood = useMemo(() => {
               onClick={() => setShowLogin(true)}
               className=" text-white text-[15px] sm:text-[14px] md:text-[13px] bg-black border border-[gray] px-[20px] sm:px-[30px] py-[8px] sm:py-[10px] rounded-full cursor-pointer transition duration-300 hover:[tomato]"
             >
-              sign in
+              SignIn
             </button>
           ) : (
             <div className="relative group">
@@ -225,6 +233,8 @@ const filterFood = useMemo(() => {
               />
               <ul className="absolute right-0 z-10 hidden group-hover:flex flex-col gap-3 bg-white p-4 min-w-[180px] rounded-lg shadow-xl border border-gray-200">
                 <li
+                  role="button"
+                  aria-label="button1"
                   onClick={() => navigate(`/myOrders`)}
                   className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-tomato hover:bg-gray-100 px-3 py-2 rounded-md transition-all duration-200"
                 >
@@ -233,6 +243,8 @@ const filterFood = useMemo(() => {
                 </li>
                 <hr className="border-t border-gray-200" />
                 <li
+                  role="button"
+                  aria-label="button2"
                   onClick={logout}
                   className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-tomato hover:bg-gray-100 px-3 py-2 rounded-md transition-all duration-200"
                 >

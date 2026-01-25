@@ -10,28 +10,29 @@ import Verify from './pages/verify/verify.jsx'
 import MyOrders from './pages/myOrders/myOrders.jsx'
 import DeliveryTracking from './components/map/DeliveryTrack.jsx'
 import ViewMenu from './pages/viewMenu/viewMenu.jsx'
-import { useParams } from 'react-router-dom'
-
-
+import { useContext } from 'react'
+import { StoreContext } from './context/StoreContext.jsx'
 
 
 const App = (  ) => {
   const [showLogin,setShowLogin]=useState(false); 
   const [category,setCategory]=useState("All"); 
+  const [notification,setNotification] = useState([]);
+  const {searchQuery} = useContext(StoreContext);
 
 
   return (
-    <>
-{/*     {showLogin?<Loginpopup setShowLogin={setShowLogin}/>:<></>} */}
+    <div className={`
+    ${searchQuery?"w-full h-full inset-0 bg-opacity-100 bg-black/30 z-[9999] object-cover":""}`}>
 
-               <div className='app' > 
-                    {showLogin?<Loginpopup setShowLogin={setShowLogin}/>:<></>}
-                <Navbar setShowLogin={setShowLogin} category={category} setCategory={setCategory} />
+       <div className='app' > 
+     {showLogin ?<Loginpopup setShowLogin={setShowLogin}/>:<></>}
+     <Navbar setShowLogin={setShowLogin} notification={notification} category={category} setCategory={setCategory} />
 
     <Routes>
       <Route path='/' element={<Home category={category} setCategory={setCategory}/>}/>
       <Route path='/cart' element={<Cart/>}/>
-      <Route path='/Placeorder' element={<Placeorder/>}/>
+      <Route path='/Placeorder' element={<Placeorder notification={notification} setNotification={setNotification}/>}/>
       <Route path='/verify' element={<Verify/>}/>
       <Route path='/myOrders' element={<MyOrders/>}/>
       <Route path='/viewmenu' element={<ViewMenu/>}/>
@@ -41,7 +42,7 @@ const App = (  ) => {
     </div>
     <Footer/> 
     
-    </>
+    </div>
   )
 }
 

@@ -8,6 +8,6 @@ const foodSchema=new mongoose.Schema({
     category:{type:String,required:true},
 });
 
-const foodModel=mongoose.models.food || mongoose.model("food",foodSchema);// has cretaed model
+const foodModel = mongoose.models.food || mongoose.model("food",foodSchema);// has cretaed model
 
 export default foodModel;

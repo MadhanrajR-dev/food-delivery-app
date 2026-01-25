@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./header.css";
 import { assets } from "../../../assets/assets";
-import { StoreContext } from "../../../context/StoreContext.jsx";
 import {useNavigate} from 'react-router-dom'
 
 
@@ -12,14 +11,9 @@ const Header = () => {
     assets.header_img4,
     assets.header_img5,
   ];
-  const [loading, setloading] = useState(true);
   const [index, setIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
   const navigate = useNavigate();
-
-  const handleMenu = ()=>{
-  
-  }
 
   useEffect(() => {
     setTimeout(() => setloading(false), 4000);
@@ -32,28 +26,14 @@ const Header = () => {
   }, [index]);
   return (
     <>
-      {/* {loading ? (
-        <div className="w-full mt-[10px] h-[32vw] bg-gray-100 bg-no-repeat bg-center bg-cover relative flex justify-center items-center px-[40px] animate-pulse">
-          <div className="absolute flex flex-col items-start gap-[1.5vw] max-w-[50%] bottom-[10%] left-[5vw] sm:max-w-[45%]">
-          
-            <div className="bg-gray-300 h-[max(4.5vw,22px)] w-3/4 rounded"></div>
-
-            
-            <div className="bg-gray-300 h-[2vw] w-full hidden sm:block rounded"></div>
-
-            
-            <div className="bg-gray-300 h-[max(3vw,40px)] w-[150px] rounded-full"></div>
-          </div>
-        </div>
-      ) : ( */}
-        <div className="w-4/4 ml-[20px] mr-[20px] mt-[20px] h-[32vw] bg-no-repeat bg-center bg-cover relative flex justify-center items-center px-[40px] overflow-hidden ">
+        <div className="w-4/4 ml-[20px] mr-[20px] mt-[20px] h-[32vw] bg-no-repeat bg-center bg-cover relative flex justify-center items-center px-[40px]">
           {/* previous image */}
-          <div
+          <div  
             className="absolute inset-0 bg-center bg-cover"
             style={{ backgroundImage: `url(${images[prevIndex]})` }}
           ></div>
           {/* newImage */}
-          <div
+          <div 
             key={index} //
             className="absolute inset-0 bg-no-repeat bg-center bg-cover fade-image"
             style={{ backgroundImage: `url(${images[index]})` }}

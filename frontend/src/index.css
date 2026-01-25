@@ -13,8 +13,9 @@
   scroll-behavior: smooth;
 }
 body{
-  min-height: 100vh;
-   overflow-x: hidden;
+height: auto;
+  overflow-y: auto;
+  
    
 }
 a{

@@ -2,8 +2,8 @@
 
 const middleware = (err,req,res,next)=>{
 
-    message = err.message || "server isuue"
-    statusCode = err.statusCode
+  let  message = err.message || "server isuue"
+  let  statusCode = err.statusCode
 
     if(err.message==="CasteError"){
         return next(new ErrorHandler("MongoDB caste Error",400))

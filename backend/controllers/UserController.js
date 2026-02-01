@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import dot from 'dotenv';
+import loginUser1 from "../services/userService.js";
 
 dot.config()
 
@@ -21,6 +22,9 @@ const createToken=(id)=>{
 const loginUser=async(req,res)=>{
 
     const {email,password}=req.body;
+
+    const res = await loginUser1(email,password)
+    
     try{
         const user = await userModel.findOne({email});
         if(!user){
@@ -32,7 +36,7 @@ const loginUser=async(req,res)=>{
             return res.json({success:false,message:"Invalid credentials"});
 
         }
-        const token=createToken(user._id.toString());
+        const token =  createToken(user._id.toString());
         res.json({success:true,token});
     }catch(error){
          console.log(error);
@@ -81,7 +85,7 @@ const registerUser=async(req,res)=>{
             password:hashedPassword,
         });
 
-        const user=await newUser.save();
+        const user = await newUser.save();
         const token= createToken(user._id.toString());
         res.json({success:true,token});
 }catch(error){

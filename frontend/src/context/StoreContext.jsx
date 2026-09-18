@@ -101,10 +101,8 @@ export const StoreContext = createContext(null);
       useEffect(() => {
   localStorage.setItem("recentSearch", JSON.stringify(recentSearch));
 }, [recentSearch]);
-
-      console.log(addRecentSearches);
-      
-
+console.log(addRecentSearches);
+     
 const contextValue={
          food_list,
          menu_list,

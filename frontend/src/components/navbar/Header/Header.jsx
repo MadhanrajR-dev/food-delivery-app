@@ -34,7 +34,7 @@ const Header = () => {
           ></div>
           {/* newImage */}
           <div 
-            key={index} //
+            key={index} 
             className="absolute inset-0 bg-no-repeat bg-center bg-cover fade-image"
             style={{ backgroundImage: `url(${images[index]})` }}
           ></div>

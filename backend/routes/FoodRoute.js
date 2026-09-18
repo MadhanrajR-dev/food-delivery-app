@@ -1,8 +1,9 @@
 import express from "express";
 import {addFood,listFood,removeFood,menuList, getMenuList, removeMenu} from "../controllers/FoodControllers.js";
 import multer from "multer";
+import cloudinary from "../config/clodinary.js";
 
-const foodRouter= express.Router();
+const foodRouter = express.Router();
 
 //image storage ingine
 
@@ -13,7 +14,27 @@ const foodRouter= express.Router();
     }
 })
 
+export  const clodinary_upload = async (file)=>{
+    return new Promise((resolve,reject)=>{
+       const stream =  cloudinary.uploader.upload_stream(
+        {folder:"foodimage"},
+        (error,result)=>{
+            if(error){
+                return reject(error)
+            }else{
+                return resolve(result)
+            }
+
+        }
+       )
+       stream.end(file.buffer)
+    })
+
+}
+
 const upload=multer({storage:storage}); 
+console.log(upload);
+
 
 foodRouter.post("/add",upload.single("image"),addFood);
 foodRouter.post('/menulist',upload.single('image'),menuList);

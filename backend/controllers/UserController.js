@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import dot from 'dotenv';
-import loginUser1 from "../services/userService.js";
+
 
 dot.config()
 
@@ -22,8 +22,6 @@ const createToken=(id)=>{
 const loginUser=async(req,res)=>{
 
     const {email,password}=req.body;
-
-    const res = await loginUser1(email,password)
     
     try{
         const user = await userModel.findOne({email});
@@ -95,4 +93,4 @@ const registerUser=async(req,res)=>{
 
 };
 
-export {loginUser,registerUser}
+export { loginUser, registerUser }

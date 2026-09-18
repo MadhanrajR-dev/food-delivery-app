@@ -6,7 +6,7 @@ import Fooditem from "../../fooditem/Fooditem.jsx";
 const Fooddisplay = ({ category }) => {
   const { food_list, searchQuery } = useContext(StoreContext);
   const filterFood = useMemo(() => {
-    const lowerQuery = String(searchQuery || "")
+  const lowerQuery = String(searchQuery || "")
       .trim()
       .toLowerCase();
     if (!lowerQuery) {
